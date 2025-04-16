@@ -34,7 +34,7 @@ export default function SignIn() {
       // Example fallback structure:
       
 
-      dispatch(login({ email: data.email, token: data.token }))
+      dispatch(login({ email: data.email, }))
       localStorage.setItem("user", JSON.stringify({
         email: data.data.email,
         token: data.data.token,
