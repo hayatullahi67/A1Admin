@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import { Search, MoreHorizontal, Ban, User } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -40,117 +40,114 @@ import {
 // Define student type
 interface Student {
   id: string
-  name: string
+  fullname: string
   email: string
-  joinDate: string
+  created_at: string
   coursesPurchased: number
   totalSpent: number
-  status: 'active' | 'banned'
+  verified: boolean
   lastActive: string
 }
 
 // Mock data for students
-const initialStudents: Student[] = [
-  {
-    id: 'STU-001',
-    name: 'Alex Johnson',
-    email: 'alex.j@example.com',
-    joinDate: '2023-01-10',
-    coursesPurchased: 8,
-    totalSpent: 349.99,
-    status: 'active',
-    lastActive: '2023-05-15',
-  },
-  {
-    id: 'STU-002',
-    name: 'Maria Garcia',
-    email: 'maria.g@example.com',
-    joinDate: '2023-02-05',
-    coursesPurchased: 12,
-    totalSpent: 599.99,
-    status: 'active',
-    lastActive: '2023-05-18',
-  },
-  {
-    id: 'STU-003',
-    name: 'James Wilson',
-    email: 'james.w@example.com',
-    joinDate: '2023-02-15',
-    coursesPurchased: 3,
-    totalSpent: 129.99,
-    status: 'active',
-    lastActive: '2023-05-10',
-  },
-  {
-    id: 'STU-004',
-    name: 'Emma Brown',
-    email: 'emma.b@example.com',
-    joinDate: '2023-03-01',
-    coursesPurchased: 5,
-    totalSpent: 249.99,
-    status: 'banned',
-    lastActive: '2023-04-20',
-  },
-  {
-    id: 'STU-005',
-    name: 'David Lee',
-    email: 'david.l@example.com',
-    joinDate: '2023-03-10',
-    coursesPurchased: 7,
-    totalSpent: 329.99,
-    status: 'active',
-    lastActive: '2023-05-17',
-  },
-  {
-    id: 'STU-006',
-    name: 'Sophia Martinez',
-    email: 'sophia.m@example.com',
-    joinDate: '2023-03-22',
-    coursesPurchased: 10,
-    totalSpent: 499.99,
-    status: 'active',
-    lastActive: '2023-05-19',
-  },
-  {
-    id: 'STU-007',
-    name: 'Daniel Taylor',
-    email: 'daniel.t@example.com',
-    joinDate: '2023-04-05',
-    coursesPurchased: 2,
-    totalSpent: 99.99,
-    status: 'active',
-    lastActive: '2023-05-12',
-  },
-  {
-    id: 'STU-008',
-    name: 'Olivia Anderson',
-    email: 'olivia.a@example.com',
-    joinDate: '2023-04-15',
-    coursesPurchased: 4,
-    totalSpent: 199.99,
-    status: 'banned',
-    lastActive: '2023-05-01',
-  },
-]
+
 
 export function StudentTable() {
-  const [students, setStudents] = useState<Student[]>(initialStudents)
+  const [students, setStudents] = useState<Student[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+   const [courses , setCourses] = useState([])
 
-  // Filter students based on search term and status
-  const filteredStudents = students.filter((student) => {
-    const matchesSearch =
-      student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      student.email.toLowerCase().includes(searchTerm.toLowerCase())
+   const userData = JSON.parse(localStorage.getItem("user") || "{}");
+   const token = userData.token;
 
-    const matchesStatus =
-      statusFilter === 'all' || student.status === statusFilter
+useEffect(() => {
+  const fetchData = async () => {
+    
+    try {
+      const result = await fetch('https://api.a1schools.org/users?roles=student', {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    return matchesSearch && matchesStatus
-  })
+      if (!result.ok) {
+        throw new Error('Failed to fetch setStudents');
+      }
+
+      const data = await result.json();
+      console.log("Fetched data:", data); // Check the structure of the response
+
+      if (Array.isArray(data.data) && data.data.length > 0) {
+        setStudents(data.data);
+                    
+      } else {
+        setStudents([]); // Handle empty array or non-array data
+      }
+
+
+
+      const coursesData: { [key: string]: Course[] } = {};
+
+      for (let student of data.data) {
+        const studentId = student.id;
+        const coursesResult = await fetch(
+          `https://api.a1schools.org/users/${studentId}/courses`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (coursesResult.ok) {
+          const coursesList = await coursesResult.json();
+          coursesData[studentId] = coursesList.data || [];
+          console.log("hello",coursesData)
+        }
+      }
+
+      setCourses(coursesData);
+      setLoading(false);
+     
+
+      
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load instructors.");
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+
+
+
+ 
+ 
+const filteredStudents = students.filter((student) => {
+  const matchesSearch =
+    student.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.email.toLowerCase().includes(searchTerm.toLowerCase());
+
+  const matchesStatus =
+    statusFilter === 'all' ||
+    (statusFilter === 'approved' && student.verified) ||
+    (statusFilter === 'pending' && !student.verified);
+
+  return matchesSearch && matchesStatus;
+});
 
   // Handle status change (ban/unban)
   const handleStatusChange = (
@@ -180,17 +177,21 @@ export function StudentTable() {
   }
 
   // Get status badge
-  const getStatusBadge = (status: 'active' | 'banned') => {
-    switch (status) {
-      case 'active':
-        return <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-      case 'banned':
-        return <Badge className='bg-red-500 hover:bg-red-600'>Banned</Badge>
-      default:
-        return <Badge>{status}</Badge>
-    }
-  }
+  const getStatusBadge = (verified: boolean) => {
+    return verified ? (
+      <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
+    ) : (
+      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
+    );
+  };
 
+  // const getStatusBadge = (verified: boolean) => {
+  //     return verified ? (
+  //       <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+  //     ) : (
+  //       <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+  //     );
+  //   };
   return (
     <div className='space-y-4'>
       <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
@@ -223,7 +224,7 @@ export function StudentTable() {
               <TableHead>Student</TableHead>
               <TableHead className='hidden md:table-cell'>Joined</TableHead>
               <TableHead>Courses</TableHead>
-              <TableHead>Total Spent</TableHead>
+              
               <TableHead>Status</TableHead>
               <TableHead className='text-right'>Actions</TableHead>
             </TableRow>
@@ -242,17 +243,17 @@ export function StudentTable() {
               filteredStudents.map((student) => (
                 <TableRow key={student.id}>
                   <TableCell>
-                    <div className='font-medium'>{student.name}</div>
+                    <div className='font-medium'>{student.fullname}</div>
                     <div className='text-sm text-muted-foreground'>
                       {student.email}
                     </div>
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {new Date(student.joinDate).toLocaleDateString()}
+                    {new Date(student.created_at).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>{student.coursesPurchased}</TableCell>
-                  <TableCell>{formatCurrency(student.totalSpent)}</TableCell>
-                  <TableCell>{getStatusBadge(student.status)}</TableCell>
+                  <TableCell>{courses[student.id]?.length || 0}</TableCell>
+                 
+                  <TableCell> {getStatusBadge(student.verified)}</TableCell>
                   <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

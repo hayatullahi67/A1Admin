@@ -1,3 +1,4 @@
+import { useEffect ,useState } from 'react'
 import { Users, GraduationCap, DollarSign, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,8 +19,157 @@ import { ApprovedInstructors } from './components/approved-instructors'
 import { InstructorTable } from './components/instructor-table'
 import { Overview } from './components/overview'
 import { StudentTable } from './components/student-table'
+import { Payout } from './components/payout'
+// import { getAuthData } from '../auth/sign-in/authData'
 
 export default function Dashboard() {
+    const [students, setStudents] = useState([])
+      const [instructors, setInstructors] = useState([])
+     const [totalPayout , setTotalPayout] = useState()
+      const [failedTransactions , setFailedTransactions] = useState()
+
+      const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const token = userData.token;
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      try {
+        
+        const result = await fetch('https://api.a1schools.org/users?roles=student', {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!result.ok) {
+          throw new Error('Failed to fetch setStudents');
+        }
+  
+        const data = await result.json();
+        console.log("Fetched data:", data); // Check the structure of the response
+  
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          setStudents(data.data);
+                      
+        } else {
+          setStudents([]); // Handle empty array or non-array data
+        }
+  
+  
+  
+      
+       
+  
+        
+  
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      
+      }
+    };
+  
+    fetchData();
+  }, []);
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+    
+      try {
+        const result = await fetch('https://api.a1schools.org/instructors', {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!result.ok) {
+          throw new Error('Failed to fetch instructors');
+        }
+  
+        const data = await result.json();
+        console.log("Fetched data:", data); // Check the structure of the response
+  
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          setInstructors(data.data);
+                      
+        } else {
+          setInstructors([]); // Handle empty array or non-array data
+        }
+  
+  
+  
+      
+  
+  
+        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      
+      try {
+        const result = await fetch('https://api.a1schools.org/admin/payout-requests', {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (!result.ok) {
+          throw new Error('Failed to fetch setRequest');
+        }
+  
+        const data = await result.json();
+        console.log("Fetched data:", data);
+  
+        if (Array.isArray(data.data) && data.data.length > 0) {
+          
+          // Calculate total amount where transferred is true
+          const totalTransferredAmount = data.data
+            .filter(item => item.transferred === true)
+            .reduce((sum, item) => sum + (item.amount || 0), 0);
+             
+            setTotalPayout(totalTransferredAmount)
+          console.log("Total transferred amount:", totalTransferredAmount);
+       
+          const failedTransactionCount = data.data.filter(item => item.transferred === false).length;
+          setFailedTransactions(failedTransactionCount);
+          console.log("Failed transaction count:", failedTransactionCount);
+        } else {
+          
+        }
+  
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount)
+  }
   return (
     <>
       {/* ===== Top Heading ===== */}
@@ -50,6 +200,7 @@ export default function Dashboard() {
               <TabsTrigger value='overview'>Overview</TabsTrigger>
               <TabsTrigger value='students'>Students</TabsTrigger>
               <TabsTrigger value='instructors'>Instructors</TabsTrigger>
+              <TabsTrigger value='payout'>Payout Request</TabsTrigger>
               <TabsTrigger value='reports' disabled>
                 Reports
               </TabsTrigger>
@@ -65,10 +216,8 @@ export default function Dashboard() {
                   <Users className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>12,345</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +20.1% from last month
-                  </p>
+                  <div className='text-2xl font-bold'>{students.length}</div>
+                  
                 </CardContent>
               </Card>
               <Card>
@@ -79,10 +228,8 @@ export default function Dashboard() {
                   <GraduationCap className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>248</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +15.3% from last month
-                  </p>
+                  <div className='text-2xl font-bold'>{instructors.length}</div>
+                  
                 </CardContent>
               </Card>
               <Card>
@@ -93,10 +240,8 @@ export default function Dashboard() {
                   <DollarSign className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>$234,567.89</div>
-                  <p className='text-xs text-muted-foreground'>
-                    +19% from last month
-                  </p>
+                  <div className='text-2xl font-bold'>{formatCurrency(totalPayout || 0) }</div>
+                  
                 </CardContent>
               </Card>
               <Card>
@@ -107,10 +252,8 @@ export default function Dashboard() {
                   <AlertCircle className='h-4 w-4 text-muted-foreground' />
                 </CardHeader>
                 <CardContent>
-                  <div className='text-2xl font-bold'>24</div>
-                  <p className='text-xs text-muted-foreground'>
-                    -8 since last week
-                  </p>
+                  <div className='text-2xl font-bold'>{failedTransactions}</div>
+                 
                 </CardContent>
               </Card>
             </div>
@@ -163,6 +306,20 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <InstructorTable />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value='payout' className='space-y-4'>
+            <Card>
+              <CardHeader>
+                <CardTitle>Payout Requests</CardTitle>
+                <CardDescription>
+                  Approve or reject Payout Request 
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Payout />
               </CardContent>
             </Card>
           </TabsContent>

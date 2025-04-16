@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState , useEffect} from 'react'
 import {
   CheckCircle,
   XCircle,
@@ -47,102 +47,31 @@ import {
 // Define instructor type
 interface Instructor {
   id: string
-  name: string
+  fullname: string
   email: string
-  expertise: string
-  courses: number
-  rating: number
-  status: 'approved' | 'pending' | 'rejected'
-  joinDate: string
+  verified: boolean;
+  // expertise: string
+  // courses: number
+  // rating: number
+  // status: 'approved' | 'pending' | 'rejected'
+  // joinDate: string
 }
 
-// Mock data for instructors
-const initialInstructors: Instructor[] = [
-  {
-    id: 'INS-001',
-    name: 'John Smith',
-    email: 'john.smith@example.com',
-    expertise: 'Web Development',
-    courses: 12,
-    rating: 4.8,
-    status: 'approved',
-    joinDate: '2023-01-15',
-  },
-  {
-    id: 'INS-002',
-    name: 'Sarah Johnson',
-    email: 'sarah.j@example.com',
-    expertise: 'Data Science',
-    courses: 8,
-    rating: 4.7,
-    status: 'approved',
-    joinDate: '2023-02-20',
-  },
-  {
-    id: 'INS-003',
-    name: 'Michael Chen',
-    email: 'm.chen@example.com',
-    expertise: 'Mobile Development',
-    courses: 5,
-    rating: 4.5,
-    status: 'pending',
-    joinDate: '2023-03-10',
-  },
-  {
-    id: 'INS-004',
-    name: 'Emily Rodriguez',
-    email: 'e.rodriguez@example.com',
-    expertise: 'UI/UX Design',
-    courses: 7,
-    rating: 4.9,
-    status: 'pending',
-    joinDate: '2023-03-15',
-  },
-  {
-    id: 'INS-005',
-    name: 'David Kim',
-    email: 'd.kim@example.com',
-    expertise: 'Machine Learning',
-    courses: 3,
-    rating: 4.6,
-    status: 'rejected',
-    joinDate: '2023-04-05',
-  },
-  {
-    id: 'INS-006',
-    name: 'Lisa Wang',
-    email: 'l.wang@example.com',
-    expertise: 'Blockchain',
-    courses: 2,
-    rating: 4.3,
-    status: 'pending',
-    joinDate: '2023-04-12',
-  },
-  {
-    id: 'INS-007',
-    name: 'Robert Taylor',
-    email: 'r.taylor@example.com',
-    expertise: 'Cybersecurity',
-    courses: 6,
-    rating: 4.7,
-    status: 'approved',
-    joinDate: '2023-02-28',
-  },
-  {
-    id: 'INS-008',
-    name: 'Jennifer Lee',
-    email: 'j.lee@example.com',
-    expertise: 'Digital Marketing',
-    courses: 4,
-    rating: 4.4,
-    status: 'pending',
-    joinDate: '2023-04-18',
-  },
-]
+type Course = {
+  id: string;
+  name: string;
+  amount: number;
+  rating: number;
+  instructorEmail: string;
+};
+
+
 
 export function InstructorTable() {
-  const [instructors, setInstructors] =
-    useState<Instructor[]>(initialInstructors)
+  const [instructors, setInstructors] = useState<Instructor[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [courses, setCourses] = useState<Course[]>([]);
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedInstructor, setSelectedInstructor] =
@@ -150,20 +79,166 @@ export function InstructorTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
 
+  
+  
+ 
+
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = userData.token;
+
+useEffect(() => {
+  const fetchData = async () => {
+   
+    try {
+      const result = await fetch('https://api.a1schools.org/instructors', {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!result.ok) {
+        throw new Error('Failed to fetch instructors');
+      }
+
+      const data = await result.json();
+      console.log("Fetched data:", data); // Check the structure of the response
+
+      if (Array.isArray(data.data) && data.data.length > 0) {
+        setInstructors(data.data);
+                    
+      } else {
+        setInstructors([]); // Handle empty array or non-array data
+      }
+
+
+
+      const instructors = data.data;
+
+    
+      // if (Array.isArray(instructors) && instructors.length > 0) {
+      //   // For each instructor, fetch their courses
+      //   for (let instructor of instructors) {
+      //     const instructorId = instructor.id;
+      //     console.log(`Fetching courses for instructor ID: ${instructorId}`);
+
+      //     // Make the API call to get the courses for the current instructor
+      //     const coursesResult = await fetch(
+      //       `https://a1school.onrender.com/instructors/${instructorId}/courses`,
+      //       {
+      //         method: "GET",
+      //         headers: {
+      //           "Authorization": `Bearer ${token}`,
+      //           "Content-Type": "application/json",
+      //         },
+      //       }
+      //     );
+
+      //     if (coursesResult.ok) {
+      //       const coursesData = await coursesResult.json();
+      //       if (Array.isArray(coursesData.data) && coursesData.data.length > 0) {
+      //         setCourses(coursesData.data);
+      //         const firstCourse= coursesData.data[0];
+      //         const firstCourseName = firstCourse.name;
+      //         console.log("hello",firstCourse.name)
+      //         console.log("coursesDataaaa" , coursesData.data[0])
+                          
+      //       } else {
+      //         setCourses([]); // Handle empty array or non-array data
+      //       }
+      
+
+            
+      //     } else {
+      //       console.error(`Failed to fetch courses for instructor ${instructorId}`);
+      //     }
+      //   }
+      // } else {
+      //   console.log("No instructors found.");
+      // }
+
+
+      const coursesData: { [key: string]: Course[] } = {};
+
+      for (let instructor of data.data) {
+        const instructorId = instructor.id;
+        const coursesResult = await fetch(
+          `https://api.a1schools.org/instructors/${instructorId}/courses`,
+          {
+            method: "GET",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (coursesResult.ok) {
+          const coursesList = await coursesResult.json();
+          coursesData[instructorId] = coursesList.data || [];
+          console.log("hello",coursesData)
+        }
+      }
+
+      setCourses(coursesData);
+      setLoading(false);
+      
+
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load instructors.");
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, []);
+
+// const getStatusBadge = (status: 'approved' | 'pending' | 'rejected') => {
+//   switch (status) {
+//     case 'approved':
+//       return (
+//         <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+//       )
+//     case 'pending':
+//       return (
+//         <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+//       )
+//     case 'rejected':
+//       return <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
+//     default:
+//       return <Badge>{status}</Badge>
+//   }
+// }
+
+
+
   // Filter instructors based on search term and status
+ 
+  const getStatusBadge = (verified: boolean) => {
+    return verified ? (
+      <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+    ) : (
+      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+    );
+  };
+
+
+
+
   const filteredInstructors = instructors.filter((instructor) => {
     const matchesSearch =
-      instructor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      instructor.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      instructor.expertise.toLowerCase().includes(searchTerm.toLowerCase())
-
+      instructor.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      instructor.email.toLowerCase().includes(searchTerm.toLowerCase());
+  
     const matchesStatus =
-      statusFilter === 'all' || instructor.status === statusFilter
-
-    return matchesSearch && matchesStatus
-  })
-
-  // Handle status change
+      statusFilter === 'all' ||
+      (statusFilter === 'approved' && instructor.verified) ||
+      (statusFilter === 'pending' && !instructor.verified);
+  
+    return matchesSearch && matchesStatus;
+  });
   const handleStatusChange = (
     instructorId: string,
     newStatus: 'approved' | 'rejected'
@@ -187,24 +262,26 @@ export function InstructorTable() {
     setActionType(action)
     setIsDialogOpen(true)
   }
-
+ 
+  
+  const status = instructors.verified ? "approved" : "pending";
   // Get status badge color
-  const getStatusBadge = (status: 'approved' | 'pending' | 'rejected') => {
-    switch (status) {
-      case 'approved':
-        return (
-          <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-        )
-      case 'pending':
-        return (
-          <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-        )
-      case 'rejected':
-        return <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
-      default:
-        return <Badge>{status}</Badge>
-    }
-  }
+  // const getStatusBadge = (status: 'approved' | 'pending' | 'rejected') => {
+  //   switch (status) {
+  //     case 'approved':
+  //       return (
+  //         <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+  //       )
+  //     case 'pending':
+  //       return (
+  //         <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+  //       )
+  //     case 'rejected':
+  //       return <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
+  //     default:
+  //       return <Badge>{status}</Badge>
+  //   }
+  // }
 
   return (
     <div className='space-y-4'>
@@ -245,34 +322,33 @@ export function InstructorTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredInstructors.length === 0 ? (
-              <TableRow>
-                <TableCell
-                  colSpan={6}
-                  className='py-8 text-center text-muted-foreground'
-                >
-                  No instructors found matching your criteria
-                </TableCell>
-              </TableRow>
-            ) : (
-              filteredInstructors.map((instructor) => (
+            {filteredInstructors.length > 0 ?  (
+              filteredInstructors.map((instructor) => 
+                { 
+                  const instructorCourses = courses[instructor.id] || [];
+                  const remainingCourses = instructorCourses.slice(1);
+                  return(
+                    <>
                 <TableRow key={instructor.id}>
+                  
                   <TableCell>
-                    <div className='font-medium'>{instructor.name}</div>
+                    <div className='font-medium'>{instructor.fullname}</div>
                     <div className='text-sm text-muted-foreground'>
                       {instructor.email}
                     </div>
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {instructor.expertise}
+                  {courses[instructor.id]?.[0]?.name || "No course"}
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {instructor.courses}
+                  {courses[instructor.id]?.length || 0}
+
                   </TableCell>
                   <TableCell className='hidden md:table-cell'>
-                    {instructor.rating}
+                  {courses[instructor.id]?.[0]?.average_rating ||  0}
+
                   </TableCell>
-                  <TableCell>{getStatusBadge(instructor.status)}</TableCell>
+                  <TableCell>{getStatusBadge(instructor.verified)}</TableCell>
                   <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -307,10 +383,68 @@ export function InstructorTable() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
+                  
+
+                 
                 </TableRow>
-              ))
-            )}
+                {remainingCourses.length > 0 && (
+        <TableRow>
+         
+              {remainingCourses.map((course) => (
+                <>
+                  
+                <TableCell>
+                  <div className='font-medium'></div>
+                  <div className='text-sm text-muted-foreground'>
+                    
+                  </div>
+                </TableCell>
+                <TableCell className='hidden md:table-cell'>
+                {course.name}
+                </TableCell>
+                <TableCell className='hidden md:table-cell'>
+                
+
+                </TableCell>
+                <TableCell className='hidden md:table-cell'>
+                {course.average_rating ||  0}
+
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell className='text-right'>
+                 
+                </TableCell>
+                
+               </>
+               
+              
+              ))}
+            
+          
+        </TableRow>
+      )}
+                </>
+              )})
+            ) : (
+              <>
+              <TableRow>
+                
+                <TableCell
+                  colSpan={6}
+                  className='py-8 text-center text-muted-foreground'
+                >
+                  No instructors found matching your criteria
+                </TableCell>
+              </TableRow>
+      </>
+              )
+          }
           </TableBody>
+
+
+
+
+
         </Table>
       </div>
 

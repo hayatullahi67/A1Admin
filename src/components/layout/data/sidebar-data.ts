@@ -21,11 +21,12 @@ import {
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
-
+const userData = JSON.parse(localStorage.getItem("user") || "{}");
+const user = userData;
 export const sidebarData: SidebarData = {
   user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
+    name: user.fullname,
+    email: user.email,
     avatar: '/avatars/shadcn.jpg',
   },
   teams: [
