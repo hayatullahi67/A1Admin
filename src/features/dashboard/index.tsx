@@ -20,7 +20,14 @@ import { InstructorTable } from './components/instructor-table'
 import { Overview } from './components/overview'
 import { StudentTable } from './components/student-table'
 import { Payout } from './components/payout'
+// import { boolean } from 'zod'
+// import { boolean } from 'zod'
 // import { getAuthData } from '../auth/sign-in/authData'
+
+type Itemf = {
+  transferred?: boolean
+  amount?: number
+}
 
 export default function Dashboard() {
     const [students, setStudents] = useState([])
@@ -141,13 +148,15 @@ export default function Dashboard() {
           
           // Calculate total amount where transferred is true
           const totalTransferredAmount = data.data
-            .filter(item => item.transferred === true)
-            .reduce((sum, item) => sum + (item.amount || 0), 0);
+            // .filter(item : Itemf  => item.transferred === true)
+            // .reduce((sum, item) => sum + (item.amount || 0), 0);
              
+            .filter((item: Itemf) => item.transferred === true)
+            .reduce((sum: number, item: Itemf) => sum + (item.amount ?? 0), 0);
             setTotalPayout(totalTransferredAmount)
           console.log("Total transferred amount:", totalTransferredAmount);
        
-          const failedTransactionCount = data.data.filter(item => item.transferred === false).length;
+          const failedTransactionCount = data.data.filter((item: Itemf )=> item.transferred === false).length;
           setFailedTransactions(failedTransactionCount);
           console.log("Failed transaction count:", failedTransactionCount);
         } else {
