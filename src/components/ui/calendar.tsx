@@ -68,8 +68,7 @@
 
 // export { Calendar }
 
-
-import * as React from 'react'
+// import * as React from 'react'
 import DatePicker, { ReactDatePickerCustomHeaderProps } from 'react-datepicker'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -78,9 +77,8 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 export type CalendarProps = {
   className?: string
-  selected?: Date | [Date | null, Date | null] | null
-  onChange?: (date: Date | [Date | null, Date | null] | null) => void
-  selectsRange?: boolean
+  selected?: Date | null  // Only a single date or null
+  onChange?: (date: Date | null) => void  // Only a single date or null
   [key: string]: any // allows additional props
 }
 
@@ -90,10 +88,11 @@ function Calendar({
   onChange,
   ...props
 }: CalendarProps) {
+
   return (
     <DatePicker
-      selected={selected}
-      onChange={onChange}
+      selected={selected}  // single Date or null
+      onChange={onChange}  // single Date or null
       className={cn('p-3', className)}
       wrapperClassName="datepicker-wrapper"
       renderCustomHeader={({
@@ -136,8 +135,5 @@ function Calendar({
 }
 
 Calendar.displayName = 'Calendar'
-
-export { Calendar }
-
 
 export { Calendar }
