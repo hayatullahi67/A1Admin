@@ -4,14 +4,14 @@ import { useState , useEffect} from 'react'
 import { Search, MoreHorizontal, Ban, User } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+// } from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,15 +47,17 @@ interface Request {
 }
 
 // Mock data for students
-
+// type ResponseData = {
+//   data: Request[];
+// };
 
 export function Payout() {
   const [requests, setRequests] = useState<Request[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [selectedStudent, setSelectedStudent] = useState<Request | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-   const [courses , setCourses] = useState([])
+  // const [selectedStudent, setSelectedStudent] = useState<Request | null>(null)
+  // const [isDialogOpen, setIsDialogOpen] = useState(false)
+  //  const [courses , setCourses] = useState([])
    const [payoutIds, setPayoutIds] = useState<string[]>([]);
 
    const userData = JSON.parse(localStorage.getItem("user") || "{}");
@@ -82,7 +84,10 @@ useEffect(() => {
 
       if (Array.isArray(data.data) && data.data.length > 0) {
         setRequests(data.data);
-        setPayoutIds(data.data.map(requestids => requestids.id));          
+        setPayoutIds(data.data.map((request: Request) => request.id));
+
+         const pid = payoutIds;
+         console.log(pid)
       } else {
         setRequests([]); // Handle empty array or non-array data
       }
@@ -146,39 +151,42 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
     console.log(`Payout ${payoutId} updated successfully`);
   } catch (error) {
     console.error('Error updating payout:', error);
-    console.error(`${action} failed`, err);
+    console.error(`${action} failed`, error);
   }
 };
  
  
   const filteredRequests = requests.filter((request) => {
     const matchesSearch =
-    request?.amount?.toLowerCase().includes(searchTerm.toLowerCase())
+    // request?.amount?.toLowerCase().includes(searchTerm.toLowerCase())
+
+    request?.amount?.toString()?.toLowerCase().includes(searchTerm.toLowerCase())
+
       
     const matchesStatus =
-      statusFilter === 'all' || request.approved === statusFilter
+  statusFilter === 'all' || request.approved === (statusFilter === 'true');
 
     return matchesSearch && matchesStatus
   })
 
   // Handle status change (ban/unban)
-  const handleStatusChange = (
-    studentId: string,
-    newStatus: 'Approved' | 'Not Approved'
-  ) => {
-    setRequests(
-      requests.map((request) =>
-        request.id === studentId ? { ...request, status: newStatus } : request
-      )
-    )
-    setIsDialogOpen(false)
-  }
+  // const handleStatusChange = (
+  //   studentId: string,
+  //   newStatus: 'Approved' | 'Not Approved'
+  // ) => {
+  //   setRequests(
+  //     requests.map((request) =>
+  //       request.id === studentId ? { ...request, status: newStatus } : request
+  //     )
+  //   )
+  //   setIsDialogOpen(false)
+  // }
 
   // Open confirmation dialog
-  const openConfirmDialog = (request: Request) => {
-    setSelectedStudent(request)
-    setIsDialogOpen(true)
-  }
+  // const openConfirmDialog = (request: Request) => {
+  //   setSelectedStudent(request)
+  //   setIsDialogOpen(true)
+  // }
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -189,16 +197,16 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
   }
 
   // Get status badge
-  const getStatusBadge = (verified: 'active' | 'banned') => {
-    switch (verified) {
-      case 'active':
-        return <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-      case 'banned':
-        return <Badge className='bg-red-500 hover:bg-red-600'>Banned</Badge>
-      default:
-        return <Badge>{verified}</Badge>
-    }
-  }
+  // const getStatusBadge = (verified: 'active' | 'banned') => {
+  //   switch (verified) {
+  //     case 'active':
+  //       return <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
+  //     case 'banned':
+  //       return <Badge className='bg-red-500 hover:bg-red-600'>Banned</Badge>
+  //     default:
+  //       return <Badge>{verified}</Badge>
+  //   }
+  // }
 
   
   return (
