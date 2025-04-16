@@ -300,10 +300,10 @@ useEffect(() => {
                  
                 </TableRow>
                 {remainingCourses.length > 0 && (
-        <TableRow>
+        <>
          
               {remainingCourses.map((course) => (
-                <>
+                <TableRow>
                   
                 <TableCell>
                   <div className='font-medium'></div>
@@ -327,13 +327,13 @@ useEffect(() => {
                  
                 </TableCell>
                 
-               </>
+               </TableRow>
                
               
               ))}
             
           
-        </TableRow>
+        </>
       )}
                 </>
               )})

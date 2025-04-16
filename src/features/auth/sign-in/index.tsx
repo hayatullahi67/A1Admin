@@ -30,6 +30,15 @@ export default function SignIn() {
         throw new Error(data.message || 'Login failed')
       }
   
+      const userData = data.data
+      const userRoles = userData.roles || []
+  
+      const isAdmin = userRoles.some((role: any) => role.name === 'admin')
+  
+      if (!isAdmin) {
+        throw new Error('Access denied. You must be an admin to log in.')
+      }
+  
       // Check what the actual structure looks like before trying to read email
       // Example fallback structure:
       

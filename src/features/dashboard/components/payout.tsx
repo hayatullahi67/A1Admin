@@ -44,6 +44,7 @@ interface Request {
   amount: number
   approved: boolean
   transferred: boolean
+  status: string
 }
 
 // Mock data for students
@@ -141,9 +142,15 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
     }
 
     // Update state locally after successful request
+    // setRequests((prevRequests) =>
+    //   prevRequests.map((r) =>
+    //     r.id === payoutId ? { ...r, action } : r
+    //   )
+    // );
+
     setRequests((prevRequests) =>
       prevRequests.map((r) =>
-        r.id === payoutId ? { ...r, action } : r
+        r.id === payoutId ? { ...r, status: action } : r
       )
     );
     const data = await response.json();
@@ -196,17 +203,7 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
     }).format(amount)
   }
 
-  // Get status badge
-  // const getStatusBadge = (verified: 'active' | 'banned') => {
-  //   switch (verified) {
-  //     case 'active':
-  //       return <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-  //     case 'banned':
-  //       return <Badge className='bg-red-500 hover:bg-red-600'>Banned</Badge>
-  //     default:
-  //       return <Badge>{verified}</Badge>
-  //   }
-  // }
+ 
 
   
   return (
@@ -262,11 +259,20 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
                 
                   
                   <TableCell>{formatCurrency(request.amount)}</TableCell>
-                  <TableCell> {request.approved ? (
+                  <TableCell> 
+                    {request.approved ? (
     <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
   ) : (
     <Badge className='bg-red-500 hover:bg-red-600'>Not Approved</Badge>
-  )}</TableCell>
+  )}
+   {/* {request.status === 'approved' ? (
+    <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+  ) : request.status === 'rejected' ? (
+    <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
+  ) : (
+    <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+  )} */}
+  </TableCell>
 
 <TableCell> {request.transferred ? (
     <Badge className='bg-green-500 hover:bg-green-600'>Yes</Badge>
@@ -287,8 +293,14 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
                       <DropdownMenuContent align='end'>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        
-                          <DropdownMenuItem
+                        {/* {request.approved ? (
+                           <span className="text-green-600 font-semibold">Approved</span>
+                        ) 
+                        :
+                        (
+                          
+                          <>
+                             <DropdownMenuItem
                             onClick={() => updatePayoutStatus(request.id, "approved")}
                           >
                             <User className='mr-2 h-4 w-4 text-green-500' />
@@ -302,7 +314,32 @@ const updatePayoutStatus = async (payoutId: string,  action: "approved" | "rejec
 
                             Reject Request
                           </DropdownMenuItem>
-                        
+                          </>
+                        )} */}
+
+                         
+{request.approved ? (
+  <span className="text-green-600 font-semibold">Approved</span>
+) : request.status === "rejected" ? (
+  <span className="text-red-600 font-semibold">Rejected</span>
+) : (
+  <>
+    <DropdownMenuItem
+      onClick={() => updatePayoutStatus(request.id, "approved")}
+    >
+      <User className='mr-2 h-4 w-4 text-green-500' />
+      Approve Request
+    </DropdownMenuItem>
+
+    <DropdownMenuItem
+      onClick={() => updatePayoutStatus(request.id, "rejected")}
+    >
+      <Ban className='mr-2 h-4 w-4 text-red-500' />
+      Reject Request
+    </DropdownMenuItem>
+  </>
+)}
+
                         <DropdownMenuSeparator />
                        
                       </DropdownMenuContent>
