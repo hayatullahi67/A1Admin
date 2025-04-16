@@ -114,49 +114,9 @@ useEffect(() => {
 
 
 
-      const instructors = data.data;
+     
 
     
-      // if (Array.isArray(instructors) && instructors.length > 0) {
-      //   // For each instructor, fetch their courses
-      //   for (let instructor of instructors) {
-      //     const instructorId = instructor.id;
-      //     console.log(`Fetching courses for instructor ID: ${instructorId}`);
-
-      //     // Make the API call to get the courses for the current instructor
-      //     const coursesResult = await fetch(
-      //       `https://a1school.onrender.com/instructors/${instructorId}/courses`,
-      //       {
-      //         method: "GET",
-      //         headers: {
-      //           "Authorization": `Bearer ${token}`,
-      //           "Content-Type": "application/json",
-      //         },
-      //       }
-      //     );
-
-      //     if (coursesResult.ok) {
-      //       const coursesData = await coursesResult.json();
-      //       if (Array.isArray(coursesData.data) && coursesData.data.length > 0) {
-      //         setCourses(coursesData.data);
-      //         const firstCourse= coursesData.data[0];
-      //         const firstCourseName = firstCourse.name;
-      //         console.log("hello",firstCourse.name)
-      //         console.log("coursesDataaaa" , coursesData.data[0])
-                          
-      //       } else {
-      //         setCourses([]); // Handle empty array or non-array data
-      //       }
-      
-
-            
-      //     } else {
-      //       console.error(`Failed to fetch courses for instructor ${instructorId}`);
-      //     }
-      //   }
-      // } else {
-      //   console.log("No instructors found.");
-      // }
 
 
       const coursesData: { [key: string]: Course[] } = {};
@@ -242,25 +202,7 @@ useEffect(() => {
     setIsDialogOpen(true)
   }
  
-  
-  const status = instructors.verified ? "approved" : "pending";
-  // Get status badge color
-  // const getStatusBadge = (status: 'approved' | 'pending' | 'rejected') => {
-  //   switch (status) {
-  //     case 'approved':
-  //       return (
-  //         <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-  //       )
-  //     case 'pending':
-  //       return (
-  //         <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-  //       )
-  //     case 'rejected':
-  //       return <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
-  //     default:
-  //       return <Badge>{status}</Badge>
-  //   }
-  // }
+ 
 
   return (
     <div className='space-y-4'>
