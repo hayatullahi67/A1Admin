@@ -185,13 +185,7 @@ const filteredStudents = students.filter((student) => {
     );
   };
 
-  // const getStatusBadge = (verified: boolean) => {
-  //     return verified ? (
-  //       <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-  //     ) : (
-  //       <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-  //     );
-  //   };
+  
   return (
     <div className='space-y-4'>
       <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>

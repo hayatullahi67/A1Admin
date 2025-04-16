@@ -195,28 +195,7 @@ useEffect(() => {
   fetchData();
 }, []);
 
-// const getStatusBadge = (status: 'approved' | 'pending' | 'rejected') => {
-//   switch (status) {
-//     case 'approved':
-//       return (
-//         <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-//       )
-//     case 'pending':
-//       return (
-//         <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-//       )
-//     case 'rejected':
-//       return <Badge className='bg-red-500 hover:bg-red-600'>Rejected</Badge>
-//     default:
-//       return <Badge>{status}</Badge>
-//   }
-// }
-
-
-
-  // Filter instructors based on search term and status
- 
-  const getStatusBadge = (verified: boolean) => {
+ const getStatusBadge = (verified: boolean) => {
     return verified ? (
       <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
     ) : (
