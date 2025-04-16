@@ -59,13 +59,14 @@ interface Course {
   average_rating?: number;
 }
 
+type Courses = { [key: string]: Course[] };
 export function StudentTable() {
   const [students, setStudents] = useState<Student[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-   const [courses , setCourses] = useState([])
+   const [courses , setCourses] = useState<Courses>({});
 
    const userData = JSON.parse(localStorage.getItem("user") || "{}");
    const token = userData.token;
@@ -261,7 +262,7 @@ const filteredStudents = students.filter((student) => {
                       <DropdownMenuContent align='end'>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {student.status === 'active' ? (
+                        {student.verified === true ? (
                           <DropdownMenuItem
                             onClick={() => openConfirmDialog(student)}
                           >
@@ -305,7 +306,7 @@ const filteredStudents = students.filter((student) => {
             <div className='py-4'>
               <div className='flex items-center gap-4 rounded-lg border p-4'>
                 <div>
-                  <div className='font-medium'>{selectedStudent.name}</div>
+                  <div className='font-medium'>{selectedStudent.fullname}</div>
                   <div className='text-sm text-muted-foreground'>
                     {selectedStudent.email}
                   </div>

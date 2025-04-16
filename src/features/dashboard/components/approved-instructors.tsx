@@ -1,6 +1,11 @@
 import { useEffect , useState} from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
+
+type Intructor ={
+  fullname:string 
+  verified: boolean
+}
 export function ApprovedInstructors() {
   
 interface Course {
@@ -39,7 +44,7 @@ interface Course {
         console.log("Fetched data:", data); // Check the structure of the response
   
         if (Array.isArray(data.data) && data.data.length > 0) {
-          const verifiedInstructors = data.data.filter(instructor => instructor.verified === true);
+          const verifiedInstructors = data.data.filter((instructor:Intructor) => instructor.verified === true);
           setInstructors(verifiedInstructors);
                       
         } else {
