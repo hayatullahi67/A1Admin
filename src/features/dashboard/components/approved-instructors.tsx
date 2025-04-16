@@ -3,8 +3,18 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export function ApprovedInstructors() {
   
+interface Course {
+  id: string;
+  name: string;
+  amount: number;
+  rating: number;
+  instructorEmail: string;
+  average_rating?: number;
+}
+
     const [instructors, setInstructors] = useState<any[]>([])
-     const [courses, setCourses] = useState([])  
+       const [courses, setCourses] = useState<{ [key: string]: Course[] }>({});
+      
 
      const userData = JSON.parse(localStorage.getItem("user") || "{}");
      const token = userData.token;

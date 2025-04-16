@@ -65,8 +65,6 @@ interface Course {
 
 export function InstructorTable() {
   const [instructors, setInstructors] = useState<Instructor[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const [courses, setCourses] = useState<{ [key: string]: Course[] }>({});
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
@@ -138,13 +136,10 @@ useEffect(() => {
       }
 
       setCourses(coursesData);
-      setLoading(false);
       
 
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to load instructors.");
-      setLoading(false);
     }
   };
 

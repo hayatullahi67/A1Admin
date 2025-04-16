@@ -50,12 +50,17 @@ interface Student {
 }
 
 // Mock data for students
-
+interface Course {
+  id: string;
+  name: string;
+  amount: number;
+  rating: number;
+  instructorEmail: string;
+  average_rating?: number;
+}
 
 export function StudentTable() {
   const [students, setStudents] = useState<Student[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
@@ -116,15 +121,12 @@ useEffect(() => {
       }
 
       setCourses(coursesData);
-      setLoading(false);
      
 
       
 
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to load instructors.");
-      setLoading(false);
     }
   };
 

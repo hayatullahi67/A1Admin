@@ -51,8 +51,6 @@ interface Request {
 
 export function Payout() {
   const [requests, setRequests] = useState<Request[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedStudent, setSelectedStudent] = useState<Request | null>(null)
@@ -97,8 +95,7 @@ useEffect(() => {
 
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Failed to load instructors.");
-      setLoading(false);
+      
     }
 
 
