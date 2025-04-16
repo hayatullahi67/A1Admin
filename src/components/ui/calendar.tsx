@@ -69,15 +69,20 @@
 // export { Calendar }
 
 
-
 import * as React from 'react'
-import DatePicker from 'react-datepicker'
+import DatePicker, { ReactDatePickerCustomHeaderProps } from 'react-datepicker'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/components/ui/button'
 import 'react-datepicker/dist/react-datepicker.css'
 
-export type CalendarProps = React.ComponentProps<typeof DatePicker>
+export type CalendarProps = {
+  className?: string
+  selected?: Date | [Date | null, Date | null] | null
+  onChange?: (date: Date | [Date | null, Date | null] | null) => void
+  selectsRange?: boolean
+  [key: string]: any // allows additional props
+}
 
 function Calendar({
   className,
@@ -87,13 +92,18 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DatePicker
-      selected={selected} // Use `selected` for single date, or an array for range
-      onChange={onChange as (date: [Date | null, Date | null] | Date | null) => void} // Handle both single and range dates
+      selected={selected}
+      onChange={onChange}
       className={cn('p-3', className)}
       wrapperClassName="datepicker-wrapper"
-      renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
-        <div className="flex justify-between items-center w-full">
+      renderCustomHeader={({
+        date,
+        decreaseMonth,
+        increaseMonth,
+      }: ReactDatePickerCustomHeaderProps) => (
+        <div className="flex justify-between items-center w-full px-2 pb-2">
           <button
+            type="button"
             className={cn(
               buttonVariants({ variant: 'outline' }),
               'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
@@ -102,8 +112,14 @@ function Calendar({
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
-          <span className="text-sm font-medium">{date.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+          <span className="text-sm font-medium">
+            {date.toLocaleString('default', {
+              month: 'long',
+              year: 'numeric',
+            })}
+          </span>
           <button
+            type="button"
             className={cn(
               buttonVariants({ variant: 'outline' }),
               'h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100'
@@ -123,3 +139,5 @@ Calendar.displayName = 'Calendar'
 
 export { Calendar }
 
+
+export { Calendar }

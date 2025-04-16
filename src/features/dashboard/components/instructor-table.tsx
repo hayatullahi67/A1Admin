@@ -50,11 +50,7 @@ interface Instructor {
   fullname: string
   email: string
   verified: boolean;
-  // expertise: string
-  // courses: number
-  // rating: number
-  // status: 'approved' | 'pending' | 'rejected'
-  // joinDate: string
+  status: 'approved' | 'pending' | 'rejected'
 }
 
 interface Course {
@@ -388,12 +384,12 @@ useEffect(() => {
             <div className='py-4'>
               <div className='flex items-center gap-4 rounded-lg border p-4'>
                 <div>
-                  <div className='font-medium'>{selectedInstructor.name}</div>
+                  <div className='font-medium'>{selectedInstructor.fullname}</div>
                   <div className='text-sm text-muted-foreground'>
                     {selectedInstructor.email}
                   </div>
                   <div className='mt-1 text-sm'>
-                    {selectedInstructor.expertise}
+                    {/* {selectedInstructor.expertise} */}
                   </div>
                 </div>
               </div>
