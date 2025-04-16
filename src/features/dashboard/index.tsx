@@ -147,12 +147,18 @@ export default function Dashboard() {
         if (Array.isArray(data.data) && data.data.length > 0) {
           
           // Calculate total amount where transferred is true
-          const totalTransferredAmount = data.data
-            // .filter(item : Itemf  => item.transferred === true)
-            // .reduce((sum, item) => sum + (item.amount || 0), 0);
-             
-            .filter((item: Itemf) => item.transferred === true)
-            .reduce((sum: number, item: Itemf) => sum + (item.amount ?? 0), 0);
+          // const totalTransferredAmount = data.data
+            
+          //   .filter((item: Itemf) => item.transferred === true)
+          //   .reduce((sum: number, item: Itemf) => sum + (item.amount ?? 0), 0);
+
+          const items = data.data;
+      const totalTransferredAmount = items
+      .filter((item: Itemf) => item.transferred)
+      .reduce((sum: number, item: Itemf) => {
+        const amount = typeof item.amount === "string" ? parseFloat(item.amount) : item.amount ?? 0;
+        return sum + (isNaN(amount) ? 0 : amount);
+      }, 0);
             setTotalPayout(totalTransferredAmount)
           console.log("Total transferred amount:", totalTransferredAmount);
        
