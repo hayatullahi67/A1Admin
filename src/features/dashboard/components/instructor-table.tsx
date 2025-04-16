@@ -57,21 +57,21 @@ interface Instructor {
   // joinDate: string
 }
 
-type Course = {
+interface Course {
   id: string;
   name: string;
   amount: number;
   rating: number;
   instructorEmail: string;
-};
-
+  average_rating?: number;
+}
 
 
 export function InstructorTable() {
   const [instructors, setInstructors] = useState<Instructor[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [courses, setCourses] = useState<{ [key: string]: Course[] }>({});
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [selectedInstructor, setSelectedInstructor] =
