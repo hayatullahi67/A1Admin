@@ -19,7 +19,7 @@ import {
   IconUserOff,
   // IconUsers,
 } from '@tabler/icons-react'
-import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
+// import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
 import a1logo from '@/assets/a1logo.png'
 const userData = JSON.parse(localStorage.getItem("user") || "{}");
