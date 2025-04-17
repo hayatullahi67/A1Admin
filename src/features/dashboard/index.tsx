@@ -186,7 +186,7 @@ export default function Dashboard() {
     }).format(amount)
   }
   return (
-    <>
+    <div className='bg-gray-100'>
       {/* ===== Top Heading ===== */}
       <Header>
         <TopNav links={topNav} />
@@ -343,7 +343,7 @@ export default function Dashboard() {
           </TabsContent>
         </Tabs>
       </Main>
-    </>
+    </div>
   )
 }
 

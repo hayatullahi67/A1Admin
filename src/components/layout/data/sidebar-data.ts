@@ -21,6 +21,7 @@ import {
 } from '@tabler/icons-react'
 import { AudioWaveform, Command, GalleryVerticalEnd } from 'lucide-react'
 import { type SidebarData } from '../types'
+import a1logo from '@/assets/a1logo.png'
 const userData = JSON.parse(localStorage.getItem("user") || "{}");
 const user = userData;
 export const sidebarData: SidebarData = {
@@ -31,18 +32,18 @@ export const sidebarData: SidebarData = {
   },
   teams: [
     {
-      name: 'Shadcn Admin',
-      logo: Command,
+      name: 'A1 Schools',
+      logo: a1logo,
       plan: 'Vite + ShadcnUI',
     },
     {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
+      name: 'A1 Schools',
+      logo: a1logo,
       plan: 'Enterprise',
     },
     {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
+      name: 'A1 Schools',
+      logo: a1logo,
       plan: 'Startup',
     },
   ],
