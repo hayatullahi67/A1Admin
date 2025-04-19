@@ -1,32 +1,38 @@
 'use client'
 
 import { useState , useEffect} from 'react'
+// import {
+//   CheckCircle,
+//   XCircle,
+//   MoreHorizontal,
+//   Search,
+//   Check,
+//   X,
+// } from 'lucide-react'
+
 import {
-  CheckCircle,
-  XCircle,
-  MoreHorizontal,
+ 
   Search,
-  Check,
-  X,
+ 
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+// import { Button } from '@/components/ui/button'
+// import {
+//   Dialog,
+//   DialogContent,
+//   DialogDescription,
+//   DialogFooter,
+//   DialogHeader,
+//   DialogTitle,
+// } from '@/components/ui/dialog'
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuLabel,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -68,10 +74,10 @@ export function InstructorTable() {
   const [courses, setCourses] = useState<{ [key: string]: Course[] }>({});
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  const [selectedInstructor, setSelectedInstructor] =
-    useState<Instructor | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
+  // const [selectedInstructor, setSelectedInstructor] =
+  //   useState<Instructor | null>(null)
+  // const [isDialogOpen, setIsDialogOpen] = useState(false)
+  // const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
 
   
   
@@ -169,19 +175,19 @@ useEffect(() => {
   
     return matchesSearch && matchesStatus;
   });
-  const handleStatusChange = (
-    instructorId: string,
-    newStatus: 'approved' | 'rejected'
-  ) => {
-    setInstructors(
-      instructors.map((instructor) =>
-        instructor.id === instructorId
-          ? { ...instructor, status: newStatus }
-          : instructor
-      )
-    )
-    setIsDialogOpen(false)
-  }
+  // const handleStatusChange = (
+  //   instructorId: string,
+  //   newStatus: 'approved' | 'rejected'
+  // ) => {
+  //   setInstructors(
+  //     instructors.map((instructor) =>
+  //       instructor.id === instructorId
+  //         ? { ...instructor, status: newStatus }
+  //         : instructor
+  //     )
+  //   )
+  //   // setIsDialogOpen(false)
+  // }
 
   // Open confirmation dialog
   // const openConfirmDialog = (
@@ -361,7 +367,7 @@ useEffect(() => {
       </div>
 
       {/* Approval/Rejection Confirmation Dialog */}
-      {selectedInstructor && (
+      {/* {selectedInstructor && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -384,7 +390,7 @@ useEffect(() => {
                     {selectedInstructor.email}
                   </div>
                   <div className='mt-1 text-sm'>
-                    {/* {selectedInstructor.expertise} */}
+                    
                   </div>
                 </div>
               </div>
@@ -415,7 +421,7 @@ useEffect(() => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )}
+      )} */}
     </div>
   )
 }
