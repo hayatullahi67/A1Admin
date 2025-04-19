@@ -184,14 +184,14 @@ useEffect(() => {
   }
 
   // Open confirmation dialog
-  const openConfirmDialog = (
-    instructor: Instructor,
-    action: 'approve' | 'reject'
-  ) => {
-    setSelectedInstructor(instructor)
-    setActionType(action)
-    setIsDialogOpen(true)
-  }
+  // const openConfirmDialog = (
+  //   instructor: Instructor,
+  //   action: 'approve' | 'reject'
+  // ) => {
+  //   setSelectedInstructor(instructor)
+  //   setActionType(action)
+  //   setIsDialogOpen(true)
+  // }
  
  
 
@@ -215,8 +215,8 @@ useEffect(() => {
           <SelectContent>
             <SelectItem value='all'>All Statuses</SelectItem>
             <SelectItem value='approved'>Approved</SelectItem>
-            <SelectItem value='pending'>Pending</SelectItem>
-            <SelectItem value='rejected'>Rejected</SelectItem>
+            {/* <SelectItem value='pending'>Pending</SelectItem>
+            <SelectItem value='rejected'>Rejected</SelectItem> */}
           </SelectContent>
         </Select>
       </div>
@@ -230,7 +230,7 @@ useEffect(() => {
               <TableHead className='hidden md:table-cell'>Courses</TableHead>
               <TableHead className='hidden md:table-cell'>Rating</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className='text-right'>Actions</TableHead>
+              {/* <TableHead className='text-right'>Actions</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -261,7 +261,7 @@ useEffect(() => {
 
                   </TableCell>
                   <TableCell>{getStatusBadge(instructor.verified)}</TableCell>
-                  <TableCell className='text-right'>
+                  {/* <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant='ghost' size='icon'>
@@ -294,7 +294,7 @@ useEffect(() => {
                         <DropdownMenuItem>View Profile</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell>
+                  </TableCell> */}
                   
 
                  

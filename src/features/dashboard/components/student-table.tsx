@@ -166,10 +166,10 @@ const filteredStudents = students.filter((student) => {
   }
 
   // Open confirmation dialog
-  const openConfirmDialog = (student: Student) => {
-    setSelectedStudent(student)
-    setIsDialogOpen(true)
-  }
+  // const openConfirmDialog = (student: Student) => {
+  //   setSelectedStudent(student)
+  //   setIsDialogOpen(true)
+  // }
 
   // Format currency
   const formatCurrency = (amount: number) => {
@@ -208,8 +208,8 @@ const filteredStudents = students.filter((student) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Students</SelectItem>
-            <SelectItem value='active'>Active</SelectItem>
-            <SelectItem value='banned'>Banned</SelectItem>
+            {/* <SelectItem value='active'>Active</SelectItem>
+            <SelectItem value='banned'>Banned</SelectItem> */}
           </SelectContent>
         </Select>
       </div>
@@ -223,7 +223,7 @@ const filteredStudents = students.filter((student) => {
               <TableHead>Courses</TableHead>
               
               <TableHead>Status</TableHead>
-              <TableHead className='text-right'>Actions</TableHead>
+              {/* <TableHead className='text-right'>Actions</TableHead> */}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -251,7 +251,7 @@ const filteredStudents = students.filter((student) => {
                   <TableCell>{courses[student.id]?.length || 0}</TableCell>
                  
                   <TableCell> {getStatusBadge(student.verified)}</TableCell>
-                  <TableCell className='text-right'>
+                  {/* <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant='ghost' size='icon'>
@@ -284,7 +284,7 @@ const filteredStudents = students.filter((student) => {
                         <DropdownMenuItem>View Purchases</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))
             )}
