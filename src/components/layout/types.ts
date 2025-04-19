@@ -9,7 +9,7 @@ interface User {
 interface Team {
   name: string
   logo: string
-  plan: string
+  // plan: string
 }
 
 interface BaseNavItem {

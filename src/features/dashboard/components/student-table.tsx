@@ -1,26 +1,26 @@
 'use client'
 
 import { useState , useEffect} from 'react'
-import { Search } from 'lucide-react'
-// import { Search, MoreHorizontal, Ban, User } from 'lucide-react'
-// import { Badge } from '@/components/ui/badge'
-// import { Button } from '@/components/ui/button'
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-// } from '@/components/ui/dialog'
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from '@/components/ui/dropdown-menu'
+// import { Search } from 'lucide-react'
+import { Search, MoreHorizontal, Ban, User } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -65,8 +65,8 @@ export function StudentTable() {
   const [students, setStudents] = useState<Student[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  // const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
-  // const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
    const [courses , setCourses] = useState<Courses>({});
 
    const userData = JSON.parse(localStorage.getItem("user") || "{}");
@@ -154,40 +154,40 @@ const filteredStudents = students.filter((student) => {
 });
 
   // Handle status change (ban/unban)
-  // const handleStatusChange = (
-  //   studentId: string,
-  //   newStatus: 'active' | 'banned'
-  // ) => {
-  //   setStudents(
-  //     students.map((student) =>
-  //       student.id === studentId ? { ...student, status: newStatus } : student
-  //     )
-  //   )
-  //   // setIsDialogOpen(false)
-  // }
+  const handleStatusChange = (
+    studentId: string,
+    newStatus: 'active' | 'banned'
+  ) => {
+    setStudents(
+      students.map((student) =>
+        student.id === studentId ? { ...student, status: newStatus } : student
+      )
+    )
+    // setIsDialogOpen(false)
+  }
 
   // Open confirmation dialog
-  // const openConfirmDialog = (student: Student) => {
-  //   setSelectedStudent(student)
-  //   setIsDialogOpen(true)
-  // }
+  const openConfirmDialog = (student: Student) => {
+    setSelectedStudent(student)
+    setIsDialogOpen(true)
+  }
 
   // Format currency
-  // const formatCurrency = (amount: number) => {
-  //   return new Intl.NumberFormat('en-US', {
-  //     style: 'currency',
-  //     currency: 'USD',
-  //   }).format(amount)
-  // }
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount)
+  }
 
   // Get status badge
-  // const getStatusBadge = (verified: boolean) => {
-  //   return verified ? (
-  //     <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-  //   ) : (
-  //     <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
-  //   );
-  // };
+  const getStatusBadge = (verified: boolean) => {
+    return verified ? (
+      <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
+    ) : (
+      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
+    );
+  };
 
   
   return (
@@ -224,7 +224,7 @@ const filteredStudents = students.filter((student) => {
               <TableHead>Courses</TableHead>
               
               <TableHead>Status</TableHead>
-              {/* <TableHead className='text-right'>Actions</TableHead> */}
+              <TableHead className='text-right'>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -251,11 +251,8 @@ const filteredStudents = students.filter((student) => {
                   </TableCell>
                   <TableCell>{courses[student.id]?.length || 0}</TableCell>
                  
-                  <TableCell>
-                   {/* {getStatusBadge(student.verified)} */}
-                   <span className='bg-green-500 hover:bg-green-600'>Active</span>
-                   </TableCell>
-                  {/* <TableCell className='text-right'>
+                  <TableCell> {getStatusBadge(student.verified)}</TableCell>
+                  <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant='ghost' size='icon'>
@@ -288,7 +285,7 @@ const filteredStudents = students.filter((student) => {
                         <DropdownMenuItem>View Purchases</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell> */}
+                  </TableCell>
                 </TableRow>
               ))
             )}
@@ -297,7 +294,7 @@ const filteredStudents = students.filter((student) => {
       </div>
 
       {/* Ban Confirmation Dialog */}
-      {/* {selectedStudent && (
+      {selectedStudent && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -334,7 +331,7 @@ const filteredStudents = students.filter((student) => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )} */}
+      )}
     </div>
   )
 }

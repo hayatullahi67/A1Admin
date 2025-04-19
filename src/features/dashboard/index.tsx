@@ -11,9 +11,9 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Header } from '@/components/layout/header'
 import { Main } from '@/components/layout/main'
-import { TopNav } from '@/components/layout/top-nav'
-import { ProfileDropdown } from '@/components/profile-dropdown'
-import { Search } from '@/components/search'
+// import { TopNav } from '@/components/layout/top-nav'
+// import { ProfileDropdown } from '@/components/profile-dropdown'
+// import { Search } from '@/components/search'
 import { ThemeSwitch } from '@/components/theme-switch'
 import { ApprovedInstructors } from './components/approved-instructors'
 import { InstructorTable } from './components/instructor-table'
@@ -189,11 +189,11 @@ export default function Dashboard() {
     <div className='bg-gray-100'>
       {/* ===== Top Heading ===== */}
       <Header>
-        <TopNav links={topNav} />
+        {/* <TopNav links={topNav} /> */}
         <div className='ml-auto flex items-center space-x-4'>
-          <Search />
+          {/* <Search /> */}
           <ThemeSwitch />
-          <ProfileDropdown />
+          {/* <ProfileDropdown /> */}
         </div>
       </Header>
 
@@ -347,29 +347,29 @@ export default function Dashboard() {
   )
 }
 
-const topNav = [
-  {
-    title: 'Overview',
-    href: 'dashboard/overview',
-    isActive: true,
-    disabled: false,
-  },
-  {
-    title: 'Students',
-    href: 'dashboard/students',
-    isActive: false,
-    disabled: false,
-  },
-  {
-    title: 'Courses',
-    href: 'dashboard/courses',
-    isActive: false,
-    disabled: false,
-  },
-  {
-    title: 'Settings',
-    href: 'dashboard/settings',
-    isActive: false,
-    disabled: false,
-  },
-]
+// const topNav = [
+//   {
+//     title: 'Overview',
+//     href: 'dashboard/overview',
+//     isActive: true,
+//     disabled: false,
+//   },
+//   {
+//     title: 'Students',
+//     href: 'dashboard/students',
+//     isActive: false,
+//     disabled: false,
+//   },
+//   {
+//     title: 'Courses',
+//     href: 'dashboard/courses',
+//     isActive: false,
+//     disabled: false,
+//   },
+//   {
+//     title: 'Settings',
+//     href: 'dashboard/settings',
+//     isActive: false,
+//     disabled: false,
+//   },
+// ]

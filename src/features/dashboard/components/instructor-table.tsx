@@ -1,38 +1,34 @@
 'use client'
 
 import { useState , useEffect} from 'react'
-// import {
-//   CheckCircle,
-//   XCircle,
-//   MoreHorizontal,
-//   Search,
-//   Check,
-//   X,
-// } from 'lucide-react'
-
 import {
- 
+  CheckCircle,
+  XCircle,
+  MoreHorizontal,
   Search,
- 
+  Check,
+  X,
 } from 'lucide-react'
-// import { Badge } from '@/components/ui/badge'
-// import { Button } from '@/components/ui/button'
-// import {
-//   Dialog,
-//   DialogContent,
-//   DialogDescription,
-//   DialogFooter,
-//   DialogHeader,
-//   DialogTitle,
-// } from '@/components/ui/dialog'
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from '@/components/ui/dropdown-menu'
+
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -74,10 +70,10 @@ export function InstructorTable() {
   const [courses, setCourses] = useState<{ [key: string]: Course[] }>({});
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
-  // const [selectedInstructor, setSelectedInstructor] =
-  //   useState<Instructor | null>(null)
-  // const [isDialogOpen, setIsDialogOpen] = useState(false)
-  // const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
+  const [selectedInstructor, setSelectedInstructor] =
+    useState<Instructor | null>(null)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
 
   
   
@@ -152,13 +148,13 @@ useEffect(() => {
   fetchData();
 }, []);
 
-//  const getStatusBadge = (verified: boolean) => {
-//     return verified ? (
-//       <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-//     ) : (
-//       <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-//     );
-//   };
+ const getStatusBadge = (verified: boolean) => {
+    return verified ? (
+      <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+    ) : (
+      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+    );
+  };
 
 
 
@@ -175,29 +171,32 @@ useEffect(() => {
   
     return matchesSearch && matchesStatus;
   });
-  // const handleStatusChange = (
-  //   instructorId: string,
-  //   newStatus: 'approved' | 'rejected'
-  // ) => {
-  //   setInstructors(
-  //     instructors.map((instructor) =>
-  //       instructor.id === instructorId
-  //         ? { ...instructor, status: newStatus }
-  //         : instructor
-  //     )
-  //   )
-  //   // setIsDialogOpen(false)
-  // }
+  const handleStatusChange = (
+    instructorId: string,
+    newStatus: 'approved' | 'rejected'
+  ) => {
+    setInstructors(
+      instructors.map((instructor) =>
+        instructor.id === instructorId
+          ? { ...instructor, status: newStatus }
+          : instructor
+      )
+    )
+    // setIsDialogOpen(false)
+  }
 
   // Open confirmation dialog
-  // const openConfirmDialog = (
-  //   instructor: Instructor,
-  //   action: 'approve' | 'reject'
-  // ) => {
-  //   setSelectedInstructor(instructor)
-  //   setActionType(action)
-  //   setIsDialogOpen(true)
-  // }
+
+ 
+ 
+  const openConfirmDialog = (
+    instructor: Instructor,
+    action: 'approve' | 'reject'
+  ) => {
+    setSelectedInstructor(instructor)
+    setActionType(action)
+    setIsDialogOpen(true)
+  }
  
  
 
@@ -235,8 +234,8 @@ useEffect(() => {
               <TableHead className='hidden md:table-cell'>Expertise</TableHead>
               <TableHead className='hidden md:table-cell'>Courses</TableHead>
               <TableHead className='hidden md:table-cell'>Rating</TableHead>
-              {/* <TableHead>Status</TableHead> */}
-              {/* <TableHead className='text-right'>Actions</TableHead> */}
+              <TableHead>Status</TableHead>
+              <TableHead className='text-right'>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -266,8 +265,8 @@ useEffect(() => {
                   {courses[instructor.id]?.[0]?.average_rating ||  0}
 
                   </TableCell>
-                  {/* <TableCell>{getStatusBadge(instructor.verified)}</TableCell> */}
-                  {/* <TableCell className='text-right'>
+                  <TableCell>{getStatusBadge(instructor.verified)}</TableCell>
+                  <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant='ghost' size='icon'>
@@ -300,7 +299,7 @@ useEffect(() => {
                         <DropdownMenuItem>View Profile</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </TableCell> */}
+                  </TableCell>
                   
 
                  
@@ -367,7 +366,7 @@ useEffect(() => {
       </div>
 
       {/* Approval/Rejection Confirmation Dialog */}
-      {/* {selectedInstructor && (
+      {selectedInstructor && (
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent>
             <DialogHeader>
@@ -421,7 +420,7 @@ useEffect(() => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      )} */}
+      )}
     </div>
   )
 }
