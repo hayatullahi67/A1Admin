@@ -3,7 +3,7 @@
 import { useState , useEffect} from 'react'
 import { Search } from 'lucide-react'
 // import { Search, MoreHorizontal, Ban, User } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+// import { Badge } from '@/components/ui/badge'
 // import { Button } from '@/components/ui/button'
 // import {
 //   Dialog,
@@ -181,13 +181,13 @@ const filteredStudents = students.filter((student) => {
   // }
 
   // Get status badge
-  const getStatusBadge = (verified: boolean) => {
-    return verified ? (
-      <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-    ) : (
-      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
-    );
-  };
+  // const getStatusBadge = (verified: boolean) => {
+  //   return verified ? (
+  //     <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
+  //   ) : (
+  //     <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
+  //   );
+  // };
 
   
   return (
@@ -251,7 +251,10 @@ const filteredStudents = students.filter((student) => {
                   </TableCell>
                   <TableCell>{courses[student.id]?.length || 0}</TableCell>
                  
-                  <TableCell> {getStatusBadge(student.verified)}</TableCell>
+                  <TableCell>
+                   {/* {getStatusBadge(student.verified)} */}
+                   <span className='bg-green-500 hover:bg-green-600'>Active</span>
+                   </TableCell>
                   {/* <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

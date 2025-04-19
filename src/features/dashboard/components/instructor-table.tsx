@@ -15,7 +15,7 @@ import {
   Search,
  
 } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
+// import { Badge } from '@/components/ui/badge'
 // import { Button } from '@/components/ui/button'
 // import {
 //   Dialog,
@@ -152,13 +152,13 @@ useEffect(() => {
   fetchData();
 }, []);
 
- const getStatusBadge = (verified: boolean) => {
-    return verified ? (
-      <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
-    ) : (
-      <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
-    );
-  };
+//  const getStatusBadge = (verified: boolean) => {
+//     return verified ? (
+//       <Badge className='bg-green-500 hover:bg-green-600'>Approved</Badge>
+//     ) : (
+//       <Badge className='bg-yellow-500 hover:bg-yellow-600'>Pending</Badge>
+//     );
+//   };
 
 
 
@@ -235,7 +235,7 @@ useEffect(() => {
               <TableHead className='hidden md:table-cell'>Expertise</TableHead>
               <TableHead className='hidden md:table-cell'>Courses</TableHead>
               <TableHead className='hidden md:table-cell'>Rating</TableHead>
-              <TableHead>Status</TableHead>
+              {/* <TableHead>Status</TableHead> */}
               {/* <TableHead className='text-right'>Actions</TableHead> */}
             </TableRow>
           </TableHeader>
@@ -266,7 +266,7 @@ useEffect(() => {
                   {courses[instructor.id]?.[0]?.average_rating ||  0}
 
                   </TableCell>
-                  <TableCell>{getStatusBadge(instructor.verified)}</TableCell>
+                  {/* <TableCell>{getStatusBadge(instructor.verified)}</TableCell> */}
                   {/* <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
