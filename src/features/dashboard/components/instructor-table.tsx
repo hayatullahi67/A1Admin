@@ -115,7 +115,7 @@ useEffect(() => {
         setInstructors([]); // Handle empty array or non-array data
       }
 
-
+     
 
      
 
@@ -193,7 +193,8 @@ useEffect(() => {
 
     fetchRequests();
   }, [token]);
-
+ 
+  console.log("re",requests) 
   const filteredInstructors = instructors.filter((instructor) => {
     const matchesSearch =
       instructor.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
