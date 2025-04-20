@@ -48,6 +48,7 @@ interface Student {
   totalSpent: number
   verified: boolean
   lastActive: string
+  banned: boolean
 }
 
 // Mock data for students
@@ -145,26 +146,54 @@ const filteredStudents = students.filter((student) => {
     student.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const matchesStatus =
+    const matchesStatus =
     statusFilter === 'all' ||
-    (statusFilter === 'approved' && student.verified) ||
-    (statusFilter === 'pending' && !student.verified);
+    (statusFilter === 'banned' && student.banned) ||
+    (statusFilter === 'active' && !student.banned);
 
   return matchesSearch && matchesStatus;
 });
 
-  // Handle status change (ban/unban)
-  const handleStatusChange = (
-    studentId: string,
-    newStatus: 'active' | 'banned'
-  ) => {
-    setStudents(
-      students.map((student) =>
-        student.id === studentId ? { ...student, status: newStatus } : student
-      )
-    )
-    // setIsDialogOpen(false)
+
+const toggleBanStatus = async (studentId: string, banned: boolean) => {
+  try {
+    const response = await fetch(
+      `https://api.a1schools.org/users/${studentId}/ban`,
+      {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to update ban status");
+    }
+
+    const updatedStudents = students.map((student) => {
+      if (student.id === studentId) {
+        return {
+          ...student,
+          banned: banned, // If banned, verified should be false
+        };
+      }
+      return student;
+    });
+
+    setStudents(updatedStudents);
+    setIsDialogOpen(false); // close dialog if it was opened
+  } catch (error) {
+    console.error("Error banning/unbanning student:", error);
   }
+};
+
+  // Handle status change (ban/unban)
+  const handleStatusChange = (studentId: string, newStatus: "active" | "banned") => {
+    const ban = newStatus === "banned";
+    toggleBanStatus(studentId, ban);
+  };
 
   // Open confirmation dialog
   const openConfirmDialog = (student: Student) => {
@@ -181,11 +210,11 @@ const filteredStudents = students.filter((student) => {
   }
 
   // Get status badge
-  const getStatusBadge = (verified: boolean) => {
-    return verified ? (
-      <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
-    ) : (
+  const getStatusBadge = (banned: boolean) => {
+    return banned ? (
       <Badge className='bg-yellow-500 hover:bg-yellow-600'>Banned</Badge>
+    ) : (
+      <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
     );
   };
 
@@ -209,8 +238,8 @@ const filteredStudents = students.filter((student) => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value='all'>All Students</SelectItem>
-            {/* <SelectItem value='active'>Active</SelectItem>
-            <SelectItem value='banned'>Banned</SelectItem> */}
+            <SelectItem value='active'>Active</SelectItem>
+            <SelectItem value='banned'>Banned</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -251,7 +280,7 @@ const filteredStudents = students.filter((student) => {
                   </TableCell>
                   <TableCell>{courses[student.id]?.length || 0}</TableCell>
                  
-                  <TableCell> {getStatusBadge(student.verified)}</TableCell>
+                  <TableCell> {getStatusBadge(student.banned)}</TableCell>
                   <TableCell className='text-right'>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -263,7 +292,7 @@ const filteredStudents = students.filter((student) => {
                       <DropdownMenuContent align='end'>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {student.verified === true ? (
+                        {/* {student.banned ? (
                           <DropdownMenuItem
                             onClick={() => openConfirmDialog(student)}
                           >
@@ -279,7 +308,24 @@ const filteredStudents = students.filter((student) => {
                             <User className='mr-2 h-4 w-4 text-green-500' />
                             Unban Student
                           </DropdownMenuItem>
-                        )}
+                        )} */}
+
+{student.banned ? (
+  <DropdownMenuItem
+    onClick={() => handleStatusChange(student.id, 'active')}
+  >
+    <User className='mr-2 h-4 w-4 text-green-500' />
+    Unban Student
+  </DropdownMenuItem>
+) : (
+  <DropdownMenuItem
+    onClick={() => openConfirmDialog(student)}
+  >
+    <Ban className='mr-2 h-4 w-4 text-red-500' />
+    Ban Student
+  </DropdownMenuItem>
+)}
+
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>View Profile</DropdownMenuItem>
                         <DropdownMenuItem>View Purchases</DropdownMenuItem>

@@ -64,6 +64,13 @@ interface Course {
   average_rating?: number;
 }
 
+interface InstructorRequest {
+  id: string,
+  user_id: string,
+  status: string,
+  approved: boolean
+}
+
 
 export function InstructorTable() {
   const [instructors, setInstructors] = useState<Instructor[]>([])
@@ -74,7 +81,7 @@ export function InstructorTable() {
     useState<Instructor | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [actionType, setActionType] = useState<'approve' | 'reject' | ''>('')
-
+  const [requests, setRequests] = useState<InstructorRequest[]>([]);
   
   
  
@@ -157,7 +164,35 @@ useEffect(() => {
   };
 
 
+  useEffect(() => {
+    const fetchRequests = async () => {
+      try {
+        const res = await fetch('https://api.a1schools.org/admin/instructor-requests', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
+        if (!res.ok) throw new Error('Failed to fetch instructor requests');
+        const data = await res.json();
+        console.log('Instructor Requests:', data);
+
+        if (Array.isArray(data.data)) {
+          setRequests(data.data);
+        } else {
+          setRequests([]);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    fetchRequests();
+  }, [token]);
 
   const filteredInstructors = instructors.filter((instructor) => {
     const matchesSearch =
