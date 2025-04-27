@@ -47,7 +47,8 @@ export default function SignIn() {
       localStorage.setItem("user", JSON.stringify({
         email: data.data.email,
         token: data.data.token,
-        fullname: data.data.fullname
+        fullname: data.data.fullname,
+        id: data.data.id
       }))
       console.log("local",localStorage)
       navigate({ to: '/' })

@@ -34,6 +34,35 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
+      const adminid = userData.id;
+      console.log("admi",userData)
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(
+        `https://api.a1schools.org/auth/logout/${adminid}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log("Logout successful");
+        // Optional: Clear any user data from localStorage/sessionStorage
+        // Redirect to login/home page
+        window.location.href = "/";
+      } else {
+        const errorData = await response.json();
+        console.error("Logout failed:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Network error during logout:", error);
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -104,7 +133,8 @@ export function NavUser({
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              Log out
+              <button onClick={handleLogout}> Log out</button>
+             
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
