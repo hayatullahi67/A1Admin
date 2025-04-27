@@ -1257,12 +1257,19 @@ export function Payout() {
     return matchesSearch && matchesStatus;
   });
  
+  // const formatCurrency = (amount: number) => {
+  //   return new Intl.NumberFormat('en-US', {
+  //     style: 'currency',
+  //     currency: 'USD',
+  //   }).format(amount)
+  // }
+
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-NG', {
       style: 'currency',
-      currency: 'USD',
-    }).format(amount)
-  }
+      currency: 'NGN',
+    }).format(amount);
+  };
 
   // Helper function to determine status badge
   const getStatusBadge = (request: Request) => {
