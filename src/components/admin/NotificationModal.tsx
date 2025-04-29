@@ -32,7 +32,7 @@ export function AdminNotificationModal({
   submitLabel,
 }: AdminNotificationModalProps) {
   const [message, setMessage] = useState(initialMessage);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting] = useState(false);
   const [open, setOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error">("success");
@@ -89,7 +89,7 @@ export function AdminNotificationModal({
   //     setIsSubmitting(false);
   //   }
   // };
- setIsSubmitting(false)
+//  setIsSubmitting(false)
 
   return (
     <>
