@@ -23,6 +23,9 @@ import { Payout } from './components/payout'
 // import { boolean } from 'zod'
 // import { boolean } from 'zod'
 // import { getAuthData } from '../auth/sign-in/authData'
+// import {AdminNotificationsPage} from '@/components/admin/notifications'
+
+import {AdminNotificationsPage} from '@/components/admin/notifications'
 
 type Itemf = {
   transferred?: boolean
@@ -223,6 +226,7 @@ export default function Dashboard() {
               <TabsTrigger value='students'>Students</TabsTrigger>
               <TabsTrigger value='instructors'>Instructors</TabsTrigger>
               <TabsTrigger value='payout'>Payout Request</TabsTrigger>
+              <TabsTrigger value='notification'>Notifications</TabsTrigger>
               <TabsTrigger value='reports' disabled>
                 Reports
               </TabsTrigger>
@@ -345,6 +349,15 @@ export default function Dashboard() {
               </CardHeader>
               <CardContent>
                 <Payout />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value='notification' className='space-y-4'>
+            <Card>
+              
+              <CardContent>
+                <AdminNotificationsPage />
               </CardContent>
             </Card>
           </TabsContent>

@@ -942,7 +942,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
-
+import { toast, Toaster } from 'react-hot-toast';
 // Define student type
 interface Request {
   id: string
@@ -1218,23 +1218,141 @@ export function Payout() {
   }
 
   // Function to handle rejection submission
-  const handleRejectionSubmit = async () => {
-    if (!currentRequestId) return
+  // const handleRejectionSubmit = async () => {
+  //   if (!currentRequestId) return
     
-    setIsSubmittingRejection(true)
+  //   setIsSubmittingRejection(true)
     
-    try {
-      await updatePayoutStatus(currentRequestId, "rejected", rejectionReason)
-      setRejectModalOpen(false)
-      setRejectionReason('')
-      setCurrentRequestId(null)
-    } catch (error) {
-      console.error("Error rejecting payout:", error)
-    } finally {
-      setIsSubmittingRejection(false)
-    }
-  }
+  //   try {
+  //     await updatePayoutStatus(currentRequestId, "rejected", rejectionReason)
+  //     setRejectModalOpen(false)
+  //     setRejectionReason('')
+  //     setCurrentRequestId(null)
+  //   } catch (error) {
+  //     console.error("Error rejecting payout:", error)
+  //   } finally {
+  //     setIsSubmittingRejection(false)
+  //   }
+  // }
  
+
+
+// Function to handle rejection submission
+const handleRejectionSubmit = async () => {
+  if (!currentRequestId) return
+  
+  setIsSubmittingRejection(true)
+  
+  try {
+    // Step 1: Reject the payout request
+    const rejectResponse = await fetch(`https://api.a1schools.org/admin/payout-requests/${currentRequestId}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        status: "rejected",
+        rejectionReason: rejectionReason
+      }),
+    });
+
+    if (!rejectResponse.ok) {
+      throw new Error('Failed to reject payout');
+    }
+
+    const rejectData = await rejectResponse.json();
+    
+    // Update UI states
+    setRequests((prevRequests) =>
+      prevRequests.map((r) =>
+        r.id === currentRequestId ? { 
+          ...r, 
+          status: "rejected",
+          approved: false,
+          rejectionReason: rejectionReason
+        } : r
+      )
+    );
+
+    if (requestDetails[currentRequestId]) {
+      setRequestDetails(prev => ({
+        ...prev,
+        [currentRequestId]: { 
+          ...prev[currentRequestId], 
+          status: "rejected",
+          approved: false,
+          rejectionReason: rejectionReason
+        }
+      }));
+    }
+    
+    // Show toast for successful rejection
+    toast.success('Payout request rejected successfully');
+
+    // Step 2: Get the instructor/user ID from request details
+    const userId = requestDetails[currentRequestId]?.instructor?.id;
+    
+    if (!userId) {
+      console.error("Could not find user ID for notification");
+      toast.error('Could not find user ID for notification');
+      throw new Error("User ID not found");
+    }
+
+    // Step 3: Create a notification
+    const notificationPayload = {
+      title: "Payout Request Rejected",
+      message: `Your payout request has been rejected. Reason: ${rejectionReason}`,
+      type: "payout_rejection"
+    };
+
+    const notificationResponse = await fetch('https://api.a1schools.org/notifications', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(notificationPayload),
+    });
+
+    if (!notificationResponse.ok) {
+      throw new Error('Failed to create notification');
+    }
+
+    const notificationData = await notificationResponse.json();
+    const notificationId = notificationData.data.id;
+    
+    // Show toast for successful notification creation
+    toast.success('Notification created successfully');
+
+    // Step 4: Send the notification to the user
+    const sendNotificationResponse = await fetch(`https://api.a1schools.org/notifications/${notificationId}/send/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!sendNotificationResponse.ok) {
+      throw new Error('Failed to send notification to user');
+    }
+
+    console.log("Rejection process completed successfully");
+    toast.success('Notification sent to user successfully');
+    
+    // Close modal and reset states
+    setRejectModalOpen(false);
+    setRejectionReason('');
+    setCurrentRequestId(null);
+  } catch (error) {
+    console.error("Error in rejection process:", error);
+    toast.error(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`);
+  } finally {
+    setIsSubmittingRejection(false);
+  }
+}
+
   const filteredRequests = requests.filter((request) => {
     // Search by amount or instructor name
     const matchesSearch = 
@@ -1284,6 +1402,7 @@ export function Payout() {
 
   return (
     <div className='space-y-4'>
+      <Toaster position="top-right" />
       <div className='flex flex-col items-center justify-between gap-4 sm:flex-row'>
         <div className='relative w-full sm:w-64'>
           <Search className='absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground' />
