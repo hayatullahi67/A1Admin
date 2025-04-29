@@ -1261,7 +1261,7 @@ const handleRejectionSubmit = async () => {
       throw new Error('Failed to reject payout');
     }
 
-    const rejectData = await rejectResponse.json();
+    // const rejectData = await rejectResponse.json();
     
     // Update UI states
     setRequests((prevRequests) =>
