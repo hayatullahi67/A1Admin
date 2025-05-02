@@ -966,10 +966,13 @@ interface Instructor {
     account_number: string
     account_bank: string
   }
+  
 }
 
 interface RequestDetail extends Request {
   instructor?: Instructor
+  created_at: string
+  updated_at: string
 }
 
 export function Payout() {
@@ -981,6 +984,9 @@ export function Payout() {
   const [requestDetails, setRequestDetails] = useState<{[key: string]: RequestDetail}>({})
   const [isLoading, setIsLoading] = useState<{[key: string]: boolean}>({})
   const [banks, setBanks] = useState<{ code: string, name: string }[]>([]);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+
+  console.log(banks)
 
   // Rejection modal states
   const [rejectModalOpen, setRejectModalOpen] = useState(false)
@@ -1066,8 +1072,21 @@ export function Payout() {
             accountBank: result.value.data.instructor?.bank?.account_bank || 'N/A',
             status: result.value.data.status || updatedRequests[index].status // Make sure status is updated
           }
+
+
+          // const requestIndex = updatedRequests.findIndex((r) => r.id === requestId);
+          // if (requestIndex !== -1) {
+          //   updatedRequests[requestIndex] = {
+          //     ...updatedRequests[requestIndex],
+          //     instructorName: result.value.data.instructor?.fullname || "N/A",
+          //     accountNumber: result.value.data.instructor?.bank?.account_number || "N/A",
+          //     accountBank: result.value.data.instructor?.bank?.account_bank || "N/A",
+          //   };}
         }
       })
+
+  console.log("re",updatedRequests)
+
       
       setRequests(updatedRequests)
     } catch (error) {
@@ -1075,15 +1094,66 @@ export function Payout() {
     }
   }
 
+  // const fetchRequestDetails = async (requestId: string) => {
+  //   if (requestDetails[requestId]) {
+  //     // Toggle expanded state if details already loaded
+  //     setExpandedRequestId(expandedRequestId === requestId ? null : requestId)
+  //     return
+  //   }
+
+  //   setIsLoading(prev => ({ ...prev, [requestId]: true }))
+    
+  //   try {
+  //     const response = await fetch(`https://api.a1schools.org/admin/payout-requests/${requestId}`, {
+  //       method: "GET",
+  //       headers: {
+  //         "Authorization": `Bearer ${token}`,
+  //         "Content-Type": "application/json",
+  //       },
+  //     })
+
+  //     if (!response.ok) {
+  //       throw new Error('Failed to fetch request details')
+  //     }
+
+  //     const data = await response.json()
+  //     console.log(`Details for ${requestId}:`, data)
+
+  //     // Update the request with instructor info and status
+  //     setRequests(prevRequests => 
+  //       prevRequests.map(req => 
+  //         req.id === requestId ? {
+  //           ...req,
+  //           instructorName: data.data.instructor?.fullname || 'N/A',
+  //           accountNumber: data.data.instructor?.bank?.account_number || 'N/A',
+  //           accountBank: data.data.instructor?.bank?.account_bank || 'N/A',
+  //           status: data.data.status || req.status // Make sure we use the status from API
+  //         } : req
+  //       )
+  //     )
+
+  //     setRequestDetails(prev => ({
+  //       ...prev,
+  //       [requestId]: data.data
+  //     }))
+      
+  //     setExpandedRequestId(requestId)
+  //   } catch (error) {
+  //     console.error("Error fetching request details:", error)
+  //   } finally {
+  //     setIsLoading(prev => ({ ...prev, [requestId]: false }))
+  //   }
+  // }
+  
   const fetchRequestDetails = async (requestId: string) => {
     if (requestDetails[requestId]) {
-      // Toggle expanded state if details already loaded
-      setExpandedRequestId(expandedRequestId === requestId ? null : requestId)
-      return
+      setExpandedRequestId(expandedRequestId === requestId ? null : requestId);
+      setDetailsModalOpen(true); // Open modal if already loaded
+      return;
     }
-
-    setIsLoading(prev => ({ ...prev, [requestId]: true }))
-    
+  
+    setIsLoading(prev => ({ ...prev, [requestId]: true }));
+  
     try {
       const response = await fetch(`https://api.a1schools.org/admin/payout-requests/${requestId}`, {
         method: "GET",
@@ -1091,40 +1161,38 @@ export function Payout() {
           "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-      })
-
+      });
+  
       if (!response.ok) {
-        throw new Error('Failed to fetch request details')
+        throw new Error('Failed to fetch request details');
       }
-
-      const data = await response.json()
-      console.log(`Details for ${requestId}:`, data)
-
-      // Update the request with instructor info and status
-      setRequests(prevRequests => 
-        prevRequests.map(req => 
+  
+      const data = await response.json();
+      setRequests(prevRequests =>
+        prevRequests.map(req =>
           req.id === requestId ? {
             ...req,
             instructorName: data.data.instructor?.fullname || 'N/A',
             accountNumber: data.data.instructor?.bank?.account_number || 'N/A',
             accountBank: data.data.instructor?.bank?.account_bank || 'N/A',
-            status: data.data.status || req.status // Make sure we use the status from API
+            status: data.data.status || req.status
           } : req
         )
-      )
-
+      );
+  
       setRequestDetails(prev => ({
         ...prev,
         [requestId]: data.data
-      }))
-      
-      setExpandedRequestId(requestId)
+      }));
+  
+      setExpandedRequestId(requestId);
+      setDetailsModalOpen(true); // Open modal after fetching
     } catch (error) {
-      console.error("Error fetching request details:", error)
+      console.error("Error fetching request details:", error);
     } finally {
-      setIsLoading(prev => ({ ...prev, [requestId]: false }))
+      setIsLoading(prev => ({ ...prev, [requestId]: false }));
     }
-  }
+  };
   
   const fetchBanks = async () => {
     try {
@@ -1150,10 +1218,10 @@ export function Payout() {
     fetchBanks();
   }, []);
 
-  const getBankName = (accountBank: string) => {
-    const bank = banks.find(b => b.code === accountBank);
-    return bank ? bank.name : 'Unknown Bank';
-  };
+  // const getBankName = (accountBank: string) => {
+  //   const bank = banks.find(b => b.code === accountBank);
+  //   return bank ? bank.name : 'Unknown Bank';
+  // };
 
   const updatePayoutStatus = async (payoutId: string, action: "approved" | "rejected", reason?: string) => {
     try {
@@ -1389,6 +1457,16 @@ const handleRejectionSubmit = async () => {
     }).format(amount);
   };
 
+  const formatDateTime = (dateString?: string) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleString('en-NG', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    });
+  };
+  
+
   // Helper function to determine status badge
   const getStatusBadge = (request: Request) => {
     if (request.status === 'approved') {
@@ -1432,8 +1510,8 @@ const handleRejectionSubmit = async () => {
           <TableHeader>
             <TableRow>
               <TableHead>Instructor Name</TableHead>
-              <TableHead>Account Number</TableHead>
-              <TableHead>Bank Name</TableHead>
+              {/* <TableHead>Account Number</TableHead> */}
+              {/* <TableHead>Bank Name</TableHead> */}
               <TableHead>Amount</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Transferred</TableHead>           
@@ -1455,8 +1533,8 @@ const handleRejectionSubmit = async () => {
               filteredRequests.map((request) => (
                 <TableRow key={request.id}>
                   <TableCell>{request.instructorName || 'Loading...'}</TableCell>
-                  <TableCell>{request.accountNumber || 'Loading...'}</TableCell>
-                  <TableCell>{getBankName(request.accountBank || '')}</TableCell>
+                  {/* <TableCell>{request.accountNumber || 'Loading...'}</TableCell> */}
+                  {/* <TableCell>{getBankName(request.accountBank || '')}</TableCell> */}
                   <TableCell>{formatCurrency(request.amount)}</TableCell>
                   <TableCell>{getStatusBadge(request)}</TableCell>
                   <TableCell>
@@ -1478,6 +1556,13 @@ const handleRejectionSubmit = async () => {
                       <DropdownMenuContent align='end'>
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuSeparator />
+                        {/* <DropdownMenuItem 
+                          onClick={() => fetchRequestDetails(request.id)}
+                          disabled={isLoading[request.id]}
+                        >
+                          <Eye className='mr-2 h-4 w-4' />
+                          {isLoading[request.id] ? 'Loading...' : 'View Full Details'}
+                        </DropdownMenuItem> */}
                         <DropdownMenuItem 
                           onClick={() => fetchRequestDetails(request.id)}
                           disabled={isLoading[request.id]}
@@ -1554,6 +1639,52 @@ const handleRejectionSubmit = async () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+
+
+
+      <Dialog open={detailsModalOpen} onOpenChange={setDetailsModalOpen}>
+  <DialogContent className="max-w-md rounded-lg shadow-lg ">
+    <DialogHeader>
+      <DialogTitle className="text-xl font-bold">Payout Request Details</DialogTitle>
+      <DialogDescription>
+        Full details of the payout request.
+      </DialogDescription>
+    </DialogHeader>
+    {expandedRequestId && requestDetails[expandedRequestId] && (
+      <div className="space-y-4 py-2">
+        <div>
+          <span className="font-semibold">Instructor Name:</span>
+          <span className="ml-2">{requestDetails[expandedRequestId].instructor?.fullname || 'N/A'}</span>
+        </div>
+        <div>
+          <span className="font-semibold">Amount:</span>
+          <span className="ml-2">{formatCurrency(requestDetails[expandedRequestId].amount)}</span>
+        </div>
+        <div>
+          <span className="font-semibold">Status:</span>
+          <span className="ml-2 capitalize">{requestDetails[expandedRequestId].status || 'pending'}</span>
+        </div>
+        <div>
+          <span className="font-semibold">Request made on:</span>
+          <span className="ml-2">{formatDateTime(requestDetails[expandedRequestId].created_at)}</span>
+        </div>
+        {requestDetails[expandedRequestId].status === 'approved' && (
+          <div>
+            <span className="font-semibold">Money transferred on:</span>
+            <span className="ml-2">{formatDateTime(requestDetails[expandedRequestId].updated_at)}</span>
+          </div>
+        )}
+      </div>
+    )}
+    <DialogFooter>
+      <Button variant="outline" onClick={() => setDetailsModalOpen(false)}>
+        Close
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
     </div>
   )
 }
